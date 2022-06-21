@@ -1,7 +1,7 @@
 from copy import deepcopy as cp
 import pandas as pd
 from plotly.figure_factory import create_gantt
-
+from gantt import *
 
 PRODUCTION_REQUIREMENT = {'A' : 1, 'B' : 2, 'C' : 1} # A-3, B-2, C-2
 SCHEDULE = {'M_1': ['LOT_1-A_1', 'LOT_1-A_2', 'LOT_2-B_1'],
@@ -91,78 +91,21 @@ while True:
                     job_completion_time_list[JOBTYPE_JOB[operation_cut.split('_')[0]]] += SETUP_TIME['heterogeneous_setup']
                     machine_completion_time_list[int(key.split('_')[1]) - 1] += SETUP_TIME['heterogeneous_setup']
 
-                gantt_data.append([key, "SETUP",  max_value, max_value + setup_time,"S"])
-                gantt_data.append([key, operation_cut, max_value + setup_time, max_value + setup_time + processing_time, job])
-                Job.append(job)
+                gantt_data.append([key, "SETUP",  max_value, max_value + setup_time])
+                gantt_data.append([key, operation_cut, max_value + setup_time, max_value + setup_time + processing_time])
+                Job.append(operation_cut)
                 del (remain_SCHEDULE_dict[key][0])
                 break
 print(gantt_data) # 간트 데이터 받아오기
 
 
-def Color(Job):
-    set_Job_type = set(Job)
-    Job = list(set_Job_type)
-    print(Job)
-
-    if len(Job) == 1:
-        colors = {'A': 'rgb(247, 195, 52)',
-                  'S': 'rgb(100,100,100)'}
-    elif len(Job) == 2:
-        colors = {'A': 'rgb(247, 195, 52)',
-                  'B': 'rgb(212, 44, 46)',
-                  'S': 'rgb(100,100,100)'}
-    elif len(Job) == 3:
-        colors = {'A': 'rgb(247, 195, 52)',
-                  'B': 'rgb(212, 44, 46)',
-                  'C': 'rgb(68, 61, 235)',
-                  'S': 'rgb(100,100,100)'}
-    return colors
-
-def Save_gantt_data_to_xlsx(gantt_data):
-    # 간트 데이터 엑셀로 저장
-    gantt_data = pd.DataFrame(gantt_data)
-    gantt_data.columns = ["Task", "Job_Type", "Start", "Finish",'Color']  # 컬럼 이름 만들기
-    gantt_data = gantt_data.sort_values('Start') # 시작시간으로 내림차순 정렬
-    writer = pd.ExcelWriter('gantt_data.xlsx')
-    gantt_data.to_excel(writer, sheet_name='Time', index=False)  # 시간순 엑셀 저장
-    gantt_data = gantt_data.sort_values('Task')
-    gantt_data.to_excel(writer, sheet_name='Machine', index=False)  # 기계순 엑셀 저장
-    gantt_data = gantt_data.sort_values('Job_Type')
-    gantt_data.to_excel(writer, sheet_name='Job_Type', index=False)  # 작업별 엑셀 저장
-    return writer.save()
-
-def df_Gantt_Chart(gantt_data):
-    gantt_data = pd.DataFrame(gantt_data)
-    gantt_data.columns = ["Task", "Job_Type", "Start", "Finish",'Color']  # 컬럼 이름 만들기
-    gantt_data = gantt_data.sort_values('Start')  # 시작시간으로 내림차순 정렬
-    # gantt_data = gantt_data.set_index(["Task"]) # Task(Machine 기준으로 인덱스 설정
-
-    fig = create_gantt(gantt_data, index_col='Job_Type', bar_width=0.15, show_colorbar=True,colors=Color(Job),
-                       showgrid_x=True, showgrid_y=False, title="Time Line",
-                       show_hover_fill=True, group_tasks=True, )
-    fig.layout.xaxis.type = "linear"
-
-    return fig.show()
-
-def xlsx_Gantt_Chart():
-    df = pd.read_excel('gantt_data.xlsx',sheet_name="Machine")
-
-    fig = create_gantt(df, index_col='Color', bar_width=0.15, show_colorbar=True,colors=Color(Job),
-                       showgrid_x=True, showgrid_y=False, title="Time Line",
-                       show_hover_fill=True, group_tasks=True, )
-    fig.layout.xaxis.type = "linear"
-    fig.show()
-    return
 
 
-# gantt_data = pd.DataFrame(gantt_data)
-# gantt_data.columns = ["Task", "Job_Type", "Start", "Finish", 'Color']  # 컬럼 이름 만들기
-# print(gantt_data)
-#
-# # Create a figure with Plotly colorscale
-# fig = create_gantt(gantt_data, index_col='Color', bar_width=0.15, show_colorbar=True, colors=Color(Job),
-#                    showgrid_x=True, showgrid_y=False, title="이채원 바보",
-#                 show_hover_fill=True, group_tasks=True, )
-# fig.layout.xaxis.type = "linear"
-# fig.show()
-#
+first = Gantt(gantt_data,Job)
+first.xlsx_Gantt_Chart()
+
+# first.df_Gantt_Chart(gantt_data)
+
+# second = Gantt(gantt_data,Job)
+# super = second.xlsx_Gantt_Chart()
+
