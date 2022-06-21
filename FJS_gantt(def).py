@@ -161,3 +161,9 @@ def xlsx_Gantt_Chart():
     return fig.show()
 
 df_Gantt_Chart(gantt_data)
+# annots =  [dict(x=2.5,y=0,text="Task label A", showarrow=False, font=dict(color='white')),
+#            dict(x=3,y=1,text="Task label B", showarrow=False, font=dict(color='White')),
+#            dict(x=4,y=2,text="Task label C", showarrow=False, font=dict(color='White'))]
+#
+# # plot figure
+# fig['layout']['annotations'] = annots
