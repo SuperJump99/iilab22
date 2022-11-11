@@ -6,7 +6,6 @@ from mlagents_envs.environment import UnityEnvironment, ActionTuple
 from mlagents_envs.side_channel.engine_configuration_channel\
                              import EngineConfigurationChannel
 
-
 load_path = f"./saved_models/Drone/DDPG/20221111144602"
 
 # DDPG를 위한 파라미터 값 세팅
